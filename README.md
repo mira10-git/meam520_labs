@@ -147,7 +147,7 @@ GitHub is an example of a location which stores remote git repositories and acts
 To see that sure your local git repository is setup correctly type the following command:
 ```
 $ cd meam520_ws
-$ git reomte -v
+$ git remote -v
 ```
 
 You should see:
