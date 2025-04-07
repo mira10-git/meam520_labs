@@ -46,10 +46,6 @@ if __name__ == "__main__":
     for (name, pose) in detector.get_detections():
          print(name,'\n',pose)
 
-    # Uncomment to get middle camera depth/rgb images
-    # mid_depth = detector.get_mid_depth()
-    # mid_rgb = detector.get_mid_rgb()
-
     # Move around...
 
     # END STUDENT CODE
