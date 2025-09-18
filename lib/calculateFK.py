@@ -11,14 +11,15 @@ class FK():
 
         pass
     
-    def transform_matrix(a, alpha, d, theta):
+    def transform_matrix(self, a, alpha, d, theta):
         # Creating the DH tranformation from params
-        return np.array([
+        T_matrix = np.array([
             [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
             [np.sin(theta), np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
             [0, np.sin(alpha), np.cos(alpha), d],
             [0, 0, 0, 1]
         ])
+        return T_matrix
 
     def forward(self, q):
         """
@@ -38,23 +39,31 @@ class FK():
 
         # Setting the DH parameters of the Franka Emika Panda
         dh_params = [
-            [0, 0, 0.333, 0],
-            [0, -pi/2, 0, 0], 
-            [0.195, pi/2, 0.316, 0],
-            [0, pi/2, 0, -pi/2],
-            [0.2035, -pi/2, 1.7, 0],
-            [0, pi/2, 0, pi/2],
-            [0, -pi/2, 0, pi/4]
+            #[0, 0, 0.333, q[0]],
+            #[0, -pi/2, 0, q[1]], 
+            #[0.195, pi/2, 0.316, q[2]],
+            #[0, pi/2, 0, q[3]],
+            #[0.2035, -pi/2, 1.7, q[4]],
+            #[0, pi/2, 0, q[5]],
+            #[0, -pi/2, 0, q[6]]
+            [0, pi/2, 0.333, q[0]],
+            [0, -pi/2, 0, q[1]],
+            [0.0825, pi/2, 0.316, q[2]],
+            [-0.825, -pi/2, 0, q[3]],
+            [0, pi/2, 0.384, q[4]],
+            [0, -pi/2, 0, q[5]],
+            [0, 0, 0.21, q[6]]
             ]
 
-        joint_ositions = np.zeros((8,3))
+        joint_positions = np.zeros((8,3))
         T0e = np.identity(4)
+        T = np.identity(4)
 
         # Base position
         joint_positions[0] = [0, 0, 0]
 
         for i, (a, alpha, d, theta) in enumerate(dh_params):
-            T_i = dh_params(a, alpha, d, theta)
+            T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
             joint_positions[i+1] = T[0:3, 3]
         
