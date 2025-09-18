@@ -1,7 +1,13 @@
 # MEAM520: Introduction to Robotics
+<<<<<<< HEAD
 ### Date Modified: 03/28/2025
 
 Maintainers: Contact 2025 Spring semester TAs
+=======
+### Date Modified: 09/10/2025
+
+Maintainers: Contact 2025 Fall semester TAs
+>>>>>>> 32d18d819c2c332b8df199e2efb7c7dbe6d47b72
 
 # Subdirectory Structure:
 - `core`: contains support code we provide to you, such as helper functions and interfaces for interacting with the robot (either simulated or real!)

@@ -18,6 +18,18 @@ As for Ubuntu 18.04, it supports the older version of ROS (Melodic), which could
 
 Therefore, we recommend using the Virtual Machine Ubuntu 20.04 or switching to native Ubuntu 20.04 instead. 
 
+<<<<<<< HEAD
+=======
+### Network Connection Issues
+
+For some different versions of the host machines, you might need to check and change your network settings.
+
+- "Fail to Fetch... " during sudo apt install open-vm-tools-desktop
+
+Shut down the VM completely (not just suspend), then in VMware, go to the Virtual Machine Library, right-click on MEAM520F22, and choose Settings. Under Network Adapter, make sure the connection is set to "Share with my Mac" or "NAT" if you are using Windows or Ubuntu 22.04 or newer. Relaunch the VM, then go to the top menu bar, select Virtual Machine - Network Adapter, and confirm that NAT is selected.
+
+
+>>>>>>> 32d18d819c2c332b8df199e2efb7c7dbe6d47b72
 ### Error with optimizing VMWare Player 17.0
 
 It's come to our attention that some of you are having issues of accessing VM settings on VMware Workstation Player 17. You might follow the instructions below to fix this issue.
@@ -98,3 +110,13 @@ on the second paragraph second line it will give you an ip (inet: IP ADDRESS)
 np.float is deprecated in numpy newer than 1.24. The default numpy version for the virtual machine environment is 1.17, so our code still use np.float. The reason your are getting this error is that you are using numpy >= 1.24 in which np.float does not exist.
 
 Solution: downgrade numpy to versions <1.24
+<<<<<<< HEAD
+=======
+
+
+### Fail to revert to working Ubuntu image for Mac host
+
+If it does not work, you can [take a new snapshot](https://techdocs.broadcom.com/us/en/vmware-cis/desktop-hypervisors/fusion-pro/13-0/using-vmware-fusion/protecting-your-virtual-machines/snapshots/take-a-snapshot.html) for your future debugging. 
+
+
+>>>>>>> 32d18d819c2c332b8df199e2efb7c7dbe6d47b72
