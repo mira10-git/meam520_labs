@@ -39,20 +39,21 @@ class FK():
 
         # Setting the DH parameters of the Franka Emika Panda
         dh_params = [
-            #[0, 0, 0.333, q[0]],
-            #[0, -pi/2, 0, q[1]], 
-            #[0.195, pi/2, 0.316, q[2]],
-            #[0, pi/2, 0, q[3]],
-            #[0.2035, -pi/2, 1.7, q[4]],
-            #[0, pi/2, 0, q[5]],
-            #[0, -pi/2, 0, q[6]]
-            [0, pi/2, 0.333, q[0]],
-            [0, -pi/2, 0, q[1]],
-            [0.0825, pi/2, 0.316, q[2]],
-            [-0.825, -pi/2, 0, q[3]],
-            [0, pi/2, 0.384, q[4]],
-            [0, -pi/2, 0, q[5]],
-            [0, 0, 0.21, q[6]]
+            [0, 0, 0.333, q[0]],
+            [0, -pi/2, 0, q[1]], 
+            [0.195, pi/2, 0.316, q[2]],
+            [0, pi/2, 0, q[3]],
+            [0.2035, -pi/2, 1.7, q[4]],
+            [0, pi/2, 0, q[5]],
+            [0, -pi/2, 0, q[6]]
+
+            #[0, pi/2, 0.333, q[0]],
+            #[0, -pi/2, 0, q[1]],
+            #[0.0825, pi/2, 0.316, q[2]],
+            #[-0.825, -pi/2, 0, q[3]],
+            #[0, pi/2, 0.384, q[4]],
+            #[0, -pi/2, 0, q[5]],
+            #[0, 0, 0.21, q[6]]
             ]
 
         joint_positions = np.zeros((8,3))
@@ -110,8 +111,48 @@ if __name__ == "__main__":
 
     # matches figure in the handout
     q = np.array([0,0,0,-pi/2,0,pi/2,pi/4])
-
     joint_positions, T0e = fk.forward(q)
-    
     print("Joint Positions:\n",joint_positions)
     print("End Effector Pose:\n",T0e)
+
+    # Test 2: All zeros 
+    q2 = np.zeros(7)
+    joint_positions, T0e = fk.forward(q2)
+    print("\nTest 2: All joint angles zero")
+    print("Joint Positions:\n", joint_positions)
+    print("End Effector Pose:\n", T0e)
+
+    # Test 3: Single joint rotation 
+    q3 = np.zeros(7)
+    q3[4] = pi/2  
+    joint_positions, T0e = fk.forward(q3)
+    print("\nTest 3: Only joint 3 = 90°")
+    print("Joint Positions:\n", joint_positions)
+    print("End Effector Pose:\n", T0e)
+
+    # Test 5: Fully extended arm (straight configuration) 
+    q5 = np.array([0,0,0,0,0,0,0])
+    joint_positions, T0e = fk.forward(q5)
+    print("\nTest 5: Straight arm")
+    print("End Effector Pose:\n", T0e)
+
+    # Visualization 
+    try:
+        import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import Axes3D
+
+        def plot_robot(positions, title="Robot configuration"):
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection="3d")
+            xs, ys, zs = positions[:,0], positions[:,1], positions[:,2]
+            ax.plot(xs, ys, zs, "-o")
+            ax.set_xlabel("X")
+            ax.set_ylabel("Y")
+            ax.set_zlabel("Z")
+            ax.set_title(title)
+            plt.show()
+
+        plot_robot(joint_positions, title="Final test configuration")
+    except ImportError:
+        print("Matplotlib not installed — skipping visualization")
+
