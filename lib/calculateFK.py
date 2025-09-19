@@ -34,17 +34,16 @@ class FK():
         dh_params = [
             [0, -pi/2, 0.333, q[0]],
             [0, pi/2, 0, q[1]],
-            [0.0825, pi/2, 0.316, q[2]],
+            [-0.0825, -pi/2, 0.316, q[2]],
             [0.0825, pi/2, 0, pi + q[3]],
             [0, pi/2, 0.384, pi + q[4]],
             [0.088, pi/2, 0, q[5]],
-            [0, 0, 0.21, -pi/4 + q[6]]
+            [0, 0, 0.107, -pi/4 + q[6]]
             ]
 
         joint_positions = np.zeros((8,3))
         T0e = np.identity(4)
         T = np.identity(4)
-        joint_positions[i+1] = T[0:3, 3]
 
         # Base position
         joint_positions[0] = [0, 0, 0]
@@ -52,8 +51,11 @@ class FK():
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
-    
+            joint_positions[i+1] = T[0:3, 3]
+        
         T0e = T
+
+        # Your code ends here
 
         return joint_positions, T0e
 
