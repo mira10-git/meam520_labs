@@ -4,11 +4,6 @@ from math import pi
 class FK():
 
     def __init__(self):
-
-        # TODO: you may want to define geometric parameters here that will be
-        # useful in computing the forward kinematics. The data you will need
-        # is provided in the lab handout
-
         pass
     
     def transform_matrix(self, a, alpha, d, theta):
@@ -35,18 +30,8 @@ class FK():
                   world frame
         """
 
-        # Your Lab 1 code starts here
-
         # Setting the DH parameters of the Franka Emika Panda
         dh_params = [
-            #[0, 0, 0.333, q[0]],
-            #[0, -pi/2, 0, q[1]], 
-            #[0.195, pi/2, 0.316, q[2]],
-            #[0, pi/2, 0, q[3]],
-            #[0.2035, -pi/2, 1.7, q[4]],
-            #[0, pi/2, 0, q[5]],
-            #[0, -pi/2, 0, q[6]]
-
             [0, -pi/2, 0.333, q[0]],
             [0, pi/2, 0, q[1]],
             [0.0825, pi/2, 0.316, q[2]],
@@ -59,6 +44,7 @@ class FK():
         joint_positions = np.zeros((8,3))
         T0e = np.identity(4)
         T = np.identity(4)
+        joint_positions[0, :] = T[0:3, 3]
 
         # Base position
         joint_positions[0] = [0, 0, 0]
@@ -66,11 +52,8 @@ class FK():
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
-            joint_positions[i+1] = T[0:3, 3]
-        
+    
         T0e = T
-
-        # Your code ends here
 
         return joint_positions, T0e
 
