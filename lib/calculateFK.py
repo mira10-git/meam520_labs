@@ -44,7 +44,7 @@ class FK():
         joint_positions = np.zeros((8,3))
         T0e = np.identity(4)
         T = np.identity(4)
-        joint_positions[0, :] = T[0:3, 3]
+        joint_positions[i+1] = T[0:3, 3]
 
         # Base position
         joint_positions[0] = [0, 0, 0]
