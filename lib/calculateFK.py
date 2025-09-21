@@ -1,9 +1,15 @@
+
 import numpy as np
 from math import pi
 
 class FK():
 
     def __init__(self):
+
+        # TODO: you may want to define geometric parameters here that will be
+        # useful in computing the forward kinematics. The data you will need
+        # is provided in the lab handout
+
         pass
     
     def transform_matrix(self, a, alpha, d, theta):
@@ -13,7 +19,7 @@ class FK():
             [np.sin(theta), np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
             [0, np.sin(alpha), np.cos(alpha), d],
             [0, 0, 0, 1]
-        ])
+        ], dtype=float)
         return T_matrix
 
     def forward(self, q):
@@ -30,17 +36,18 @@ class FK():
                   world frame
         """
 
+        # Your Lab 1 code starts here
+
         # Setting the DH parameters of the Franka Emika Panda
-        dh_params = [
-            [0, 0, 0.141, 0],
-            [0, -pi/2, 0.192, q[0]],
+        dh_params = np.array([
+            [0, -pi/2, 0.333, q[0]],
             [0, pi/2, 0, q[1]],
             [0.0825, pi/2, 0.316, q[2]],
-            [-0.0825, -pi/2, 0, q[3]],
-            [0, pi/2, 0.384, q[4]],
-            [0.088, pi/2, 0, q[5]]
-            [0, 0, 0.21, q[6]-pi/4]
-            ]
+            [0.0825, pi/2, 0, pi + q[3]],
+            [0, pi/2, 0.384, pi + q[4]],
+            [0.088, pi/2, 0, q[5]],
+            [0, 0, 0.21, -pi/4 + q[6]]
+            ],dtype=float)
 
         joint_positions = np.zeros((8,3))
         T0e = np.identity(4)
@@ -49,10 +56,22 @@ class FK():
         # Base position
         joint_positions[0] = [0, 0, 0]
 
+        joint_offsets = []
+        for(a, alpha, d, theta) in dh_params:
+            if abs(a) > 1e-9:
+                joint_offsets.append(np.array([a/2.0, 0.0, 0.0]))
+            elif abs(d) > 1e-9:
+                joint_offsets.append(np.array([0.0, 0.0, d/2.0]))
+            else:
+                joint_offsets.append(np.zeros(3))
+
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
             joint_positions[i+1] = T[0:3, 3]
+            local_offset_hom = np.array([*joint_offsets[i], 1.0]).reshape(4,1)
+            world_pos_hom = T @ local_offset_hom
+            joint_positions[i+1] = world_pos_hom[0:3,0]
         
         T0e = T
 
@@ -141,4 +160,3 @@ if __name__ == "__main__":
         plot_robot(joint_positions, title="Final test configuration")
     except ImportError:
         print("Matplotlib not installed — skipping visualization")
-        
