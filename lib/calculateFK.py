@@ -32,14 +32,13 @@ class FK():
 
         # Setting the DH parameters of the Franka Emika Panda
         dh_params = [
-            [0, 0, 0.141, 0],
-            [0, -pi/2, 0.192, q[0]],
+            [0, -pi/2, 0.333, q[0]],
             [0, pi/2, 0, q[1]],
             [0.0825, pi/2, 0.316, q[2]],
-            [-0.0825, -pi/2, 0, q[3]],
-            [0, pi/2, 0.384, q[4]],
-            [0.088, pi/2, 0, q[5]]
-            [0, 0, 0.21, q[6]-pi/4]
+            [0.0825, pi/2, 0, pi + q[3]],
+            [0, pi/2, 0.384, pi + q[4]],
+            [0.088, pi/2, 0, q[5]],
+            [0, 0, 0.21, -pi/4 + q[6]]
             ]
 
         joint_positions = np.zeros((8,3))
@@ -49,10 +48,22 @@ class FK():
         # Base position
         joint_positions[0] = [0, 0, 0]
 
+        joint_offsets = []
+        for(a, alpha, d, theta) in dh_params:
+            if abs(a) > 1e-9:
+                joint_offsets.append(np.array([a/2.0, 0.0, 0.0]))
+            elif abs(d) > 1e-9:
+                joint_offsets.append(np.array([0.0, 0.0, d/2.0]))
+            else:
+                joint_offsets.append(np.zeros(3))
+
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
-            joint_positions[i+1] = T[0:3, 3]
+            
+            local_offset_hom = np.array([*joint_offsets[i], 1.0]).reshape(4,1)
+            world_pos_hom = T@local_offset_hom
+            joint_positions[i+1] = world_pos_hom[0:3,0]
         
         T0e = T
 
