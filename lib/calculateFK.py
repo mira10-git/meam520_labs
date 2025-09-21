@@ -68,7 +68,7 @@ class FK():
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
-            joint_positions[i+1] = T[0:3, 3]
+            #joint_positions[i+1] = T[0:3, 3]
             local_offset_hom = np.array([*joint_offsets[i], 1.0]).reshape(4,1)
             world_pos_hom = T @ local_offset_hom
             joint_positions[i+1] = world_pos_hom[0:3,0]
