@@ -56,22 +56,10 @@ class FK():
         # Base position
         joint_positions[0] = [0, 0, 0]
 
-        joint_offsets = []
-        for(a, alpha, d, theta) in dh_params:
-            if abs(a) > 1e-9:
-                joint_offsets.append(np.array([a/2.0, 0.0, 0.0]))
-            elif abs(d) > 1e-9:
-                joint_offsets.append(np.array([0.0, 0.0, d/2.0]))
-            else:
-                joint_offsets.append(np.zeros(3))
-
         for i, (a, alpha, d, theta) in enumerate(dh_params):
             T_i = self.transform_matrix(a, alpha, d, theta)
             T = T @ T_i
-            #joint_positions[i+1] = T[0:3, 3]
-            local_offset_hom = np.array([*joint_offsets[i], 1.0]).reshape(4,1)
-            world_pos_hom = T @ local_offset_hom
-            joint_positions[i+1] = world_pos_hom[0:3,0]
+            joint_positions[i+1] = T[0:3, 3]
         
         T0e = T
 
